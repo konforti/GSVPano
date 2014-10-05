@@ -1,14 +1,14 @@
-## GSVPano.js - Google Street View Panorama lib
+## GSVPano - Google Street View Panorama lib
 
 Library to help requesting and stitching Google Street View panoramas.
 
-You can see a [basic example for getting a Photosphere image](http://konforti.net/GSVPano.js/examples).
+### Examples
 
-And you can see it in use in a [WebGL Google Street View Panorama Viewer](http://www.clicktorelease.com/code/street).
+* [basic example for getting a Photosphere image](http://konforti.net/GSVPano/examples).
+* [WebGL Google Street View Panorama Viewer](http://www.clicktorelease.com/code/street).
+* [Heganoo.com story map 'North America 360'](http://heganoo.com/node/8177/8179).
 
-Forks, pull requests and code critiques are welcome!
-
-#### Using the code ####
+#### Using the code
 
 Include GSVPano.[min.]js and Google Maps API lib.
 
@@ -40,7 +40,7 @@ loader.onPanoramaLoad = function() {
 loader.load( new google.maps.LatLng( 42.216188,-75.726578 ) );
 ```
 
-### hooks ###
+### hooks
 
 ```js
 loader.onSizeChange = function() { 
@@ -70,6 +70,4 @@ loader.onPanoramaLoad = function() {
 };
 ```
 
-#### License ####
-
-MIT licensed
+Forks, pull requests and code critiques are welcome!
