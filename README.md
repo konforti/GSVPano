@@ -4,7 +4,6 @@ Library to help requesting and stitching Google Street View panoramas.
 
 ### Examples
 
-* [basic example for getting a Photosphere image](http://konforti.net/GSVPano/examples).
 * [WebGL Google Street View Panorama Viewer](http://www.clicktorelease.com/code/street).
 * [Heganoo.com story map 'North America 360'](http://heganoo.com/node/8177/8179).
 
