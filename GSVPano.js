@@ -1,3 +1,7 @@
+// GSVPano.js
+// Copyright (c) 2014 Heganoo
+// https://github.com/heganoo/GSVPano
+
 /**
  * @type {GSVPANO|*|{}}
  */
