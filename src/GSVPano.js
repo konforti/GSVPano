@@ -3,8 +3,8 @@
 // https://github.com/heganoo/GSVPano
 
 /**
- * @module GSVPano
- * @class GSVPano.PanoLoader
+ * @module GSVPANO
+ * @class GSVPANO.PanoLoader
  */
 var GSVPANO = {};
 
@@ -118,14 +118,12 @@ GSVPANO.PanoLoader = function(parameters) {
         //        url = 'https://geo0.ggpht.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&panoid=' + _panoId + '&output=tile&x=' + x + '&y=' + y + '&zoom=' + _zoom + '&nbt&fover=2';
         //        url = 'https://cbks2.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&panoid=' + _panoId + '&output=tile&zoom=' + _zoom + '&x=' + x + '&y=' + y + '&' + Date.now();
         url = 'http://maps.google.com/cbk?output=tile&panoid=' + _panoId + '&zoom=' + _zoom + '&x=' + x + '&y=' + y + '&' + Date.now();
-        (function(x, y) {
+        //(function(x, y) {
           var img = new Image();
-          img.addEventListener('load', function() {
-            self.composeFromTile(x, y, this);
-          });
+          img.addEventListener('load', self.composeFromTile.bind(self, x, y, img));
           img.crossOrigin = '';
           img.src = url;
-        })(x, y);
+        //})(x, y);
       }
     }
   };
@@ -203,4 +201,4 @@ GSVPANO.PanoLoader = function(parameters) {
 
 };
 
-global.GSVPano = module.exports = GSVPano;
+global.GSVPANO = module.exports = GSVPANO;
