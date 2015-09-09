@@ -1,2 +1,4 @@
-.directory
-.idea
+node_modules/
+docs/
+examples/
+build/
