@@ -13,6 +13,9 @@ var GSVPANO = GSVPANO || {};
 
 
 /**
+ * Fetch URL. Use this parameter in case the URL stops working. At
+ * the end of this string, the parameters &paramId, &x, &y, &zoom 
+ * and the current timestamp are appended.
  * @property GSVPANO._url
  * @type {String}
  * @default 'http://maps.google.com/cbk?output=tile'
@@ -20,14 +23,16 @@ var GSVPANO = GSVPANO || {};
 // 'https://geo0.ggpht.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=tile&nbt&fover=2'
 // 'https://cbks2.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=tile'
 
-GSVPANO._url = _parameters.url || 'http://maps.google.com/cbk?output=tile';
+GSVPANO._url = 'http://maps.google.com/cbk?output=tile';
 
 /**
+ * Data Fetch URL. Use this parameter in case the URL stops working.
+ * At the end of this string, the parameter &ll is appended.
  * @property GSVPANO._data_url
  * @type {String}
  * @default 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&radius=350'
  */
-GSVPANO._data_url = _parameters.dataUrl || 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&radius=350';
+GSVPANO._data_url = 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&radius=350';
 
 GSVPANO.Pano = require('./Pano');
 
@@ -37,11 +42,6 @@ GSVPANO.Pano = require('./Pano');
  * @constructor
  * @param {Object} parameters
  * @param {Number} parameters.zoom Zoom (default 1)
- * @param {String} parameters.url Fetch URL. Default 'http://maps.google.com/cbk?output=tile'. 
- *   Use this parameter in case the URL stops working. At the end of this string, the parameters 
- *   &paramId, &x, &y, &zoom and the current timestamp are appended.
- * @param {String} parameters.dataUrl Data Fetch URL. Default 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&radius=350'. 
- *   Use this parameter in case the URL stops working. At the end of this string, the parameter &ll is appended.
  */
 GSVPANO.PanoLoader = function(parameters) {
   'use strict';
@@ -93,8 +93,11 @@ GSVPANO.PanoLoader = function(parameters) {
    * @event panorama.load
    * @param {Pano} pano
    */
-  var handlePanoLoad = function(pano) {
-    self.emit('pano.load', pano);
+  var handlePanoLoad = function(callback, pano) {
+    self.emit('panorama.load', pano);
+    if (callback) {
+      callback(pano);
+    }
   };
 
   /**
@@ -104,19 +107,6 @@ GSVPANO.PanoLoader = function(parameters) {
    */
   var throwError = function(message) {
     self.emit('error', message);
-  };
-
-  /**
-   * @method adaptTextureToZoom
-   */
-  this.adaptTextureToZoom = function() {
-
-    var w = 416 * Math.pow(2, _zoom),
-      h = (416 * Math.pow(2, _zoom - 1));
-    _canvas.width = w;
-    _canvas.height = h;
-    // _ctx.translate( _canvas.width, 0 );
-    // _ctx.scale( -1, 1 );
   };
 
   /**
@@ -160,8 +150,9 @@ GSVPANO.PanoLoader = function(parameters) {
           pitch: result.tiles.originPitch,
           copyright: result.copyright,
           imageDate: result.imageDate,
-          location: result.location
-        }, handlePanoLoad);
+          location: result.location,
+          zoom: _zoom
+        }, handlePanoLoad.bind(self, callback));
 
         pano.composePanorama();
         self.emit('panorama.data', pano);
@@ -178,7 +169,6 @@ GSVPANO.PanoLoader = function(parameters) {
    */
   this.setZoom = function(z) {
     _zoom = z;
-    this.adaptTextureToZoom();
   };
 
   // Default zoom.

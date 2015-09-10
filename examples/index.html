@@ -20,33 +20,35 @@
 <div id="copyright"></div>
 
 <script>
-    var update = function () {
+    var update = function() {
         var
-            lat = document.getElementById( 'lat' ).value,
-            lng = document.getElementById( 'lng' ).value,
-            zoom = document.getElementById( 'zoom' ).value,
-            panoBox = document.getElementById( 'pano' ),
-            copyrightBox = document.getElementById( 'copyright' );
+            lat = document.getElementById('lat').value,
+            lng = document.getElementById('lng').value,
+            zoom = document.getElementById('zoom').value,
+            panoBox = document.getElementById('pano'),
+            copyrightBox = document.getElementById('copyright');
 
         // Create a loader.
-        var loader = new GSVPANO.PanoLoader( {zoom: zoom} );
+        var loader = new GSVPANO.PanoLoader({
+            zoom: zoom
+        });
 
         // Set loading sign.
         copyrightBox.innerHTML = 'Loading...';
 
         // Implement the onPanoramaLoad handler
-        loader.onPanoramaLoad = function () {
-            copyrightBox.innerHTML = this.copyright;
-            panoBox.appendChild(this.canvas);
-        };
+        loader.on('panorama.load', function(pano) {
+            copyrightBox.innerHTML = pano.copyright;
+            panoBox.appendChild(pano.canvas);
+        });
 
         // Invoke the load method with a LatLng point.
-        loader.load( new google.maps.LatLng( lat, lng ) );
+        loader.load(new google.maps.LatLng(lat, lng));
 
         // Set error handle.
-        loader.onError = function( message ) {
-            alert( message );
-        }
+        loader.on('error', function(message) {
+            alert(message);
+        });
     }
 
     document.getElementById( 'submit' ).addEventListener( 'click', update );

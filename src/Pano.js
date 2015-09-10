@@ -23,7 +23,7 @@ var Pano = function(params, callback) {
    * @attribute id
    * @type {Hash}
    */
-  this.id = params.panoId;
+  this.id = params.id;
   /**
    * @attribute rotation
    * @type {Number}
@@ -66,6 +66,12 @@ var Pano = function(params, callback) {
    * @default null
    */
   this.canvas = null;
+  /**
+   * @attribute _ctx
+   * @type {Canvas 2d Context}
+   * @default null
+   */
+  this._ctx = null;
 };
 
 /**
@@ -75,6 +81,22 @@ var Pano = function(params, callback) {
  */
 Pano.prototype.setRotation = function(deg) {
   this.rotation = deg * Math.PI / 180.0;
+};
+
+/**
+ * @method initCanvas
+ * @private
+ */
+Pano.prototype.initCanvas = function() {
+  this.canvas = document.createElement('canvas');
+  this._ctx = this.canvas.getContext('2d');
+
+  var w = 416 * Math.pow(2, this.zoom),
+    h = (416 * Math.pow(2, this.zoom - 1));
+  this.canvas.width = w;
+  this.canvas.height = h;
+  // this._ctx.translate( this.canvas.width, 0 );
+  // this._ctx.scale( -1, 1 );
 };
 
 /**
@@ -89,8 +111,10 @@ Pano.prototype.onProgress = function(p) {};
  * @param {Hash} panoId
  */
 Pano.prototype.composePanorama = function() {
-  var w = (_zoom == 3) ? 7 : Math.pow(2, _zoom),
-    h = Math.pow(2, _zoom - 1),
+  this.initCanvas();
+
+  var w = (this.zoom == 3) ? 7 : Math.pow(2, this.zoom),
+    h = Math.pow(2, this.zoom - 1),
     url, x, y;
 
   /**
@@ -122,7 +146,7 @@ Pano.prototype.composePanorama = function() {
  * @private
  */
 Pano.prototype.createImage = function(x, y) {
-  var url = _url + '&panoid=' + this.id + '&zoom=' + this.zoom + '&x=' + x + '&y=' + y + '&' + Date.now(),
+  var url = GSVPANO._url + '&panoid=' + this.id + '&zoom=' + this.zoom + '&x=' + x + '&y=' + y + '&' + Date.now(),
     img = new Image();
 
   img.addEventListener('load', this.composeFromTile.bind(this, x, y, img));
@@ -137,9 +161,8 @@ Pano.prototype.createImage = function(x, y) {
  * @param {Image} texture
  */
 Pano.prototype.composeFromTile = function(x, y, texture) {
-  var _canvas = document.createElement('canvas'),
-    _ctx = _canvas.getContext('2d');
-  _ctx.drawImage(texture, x * 512, y * 512);
+  this._ctx.drawImage(texture, x * 512, y * 512);
+  console.log(x, y, this._count);
 
   this._count++;
 
@@ -147,9 +170,12 @@ Pano.prototype.composeFromTile = function(x, y, texture) {
   this.onProgress(p);
 
   if (this._count === this._total) {
-    this.canvas = _canvas;
+    // Remove onProgress Callback (no pointers attached)
+    if (this.hasOwnProperty('onProgress')) {
+      this.onProgress = null;
+    }
     if (this.callback) {
-      callback(this);
+      this.callback(this);
     }
   }
 };
