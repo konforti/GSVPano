@@ -2,10 +2,14 @@
  * @module GSVPANO
  */
 
+var eventEmitter = require('event-emitter');
+eventEmitter.alloff = require('event-emitter/all-off');
+
 /**
  * One single Panoramic item
  * @class Pano
  * @author juampi92
+ * @extends {EventEmitter}
  * @constructor
  * @param  {Object} params
  * @param {Hash} params.panoId
@@ -14,9 +18,20 @@
  * @param {Google.Maps.LatLng} params.location
  * @param {String} params.copyright
  * @param {Date} params.imageDate
- * @param {Function} callback Function to call when the Pano is done loading
+ * @example
+ *         var pano = new GSVPANO.Pano({
+ *           id: panoId,
+ *           rotation: rotation,
+ *           pitch: pitch,
+ *           location: location,
+ *           imageDate: imageDate,
+ *           copyright: copyright,
+ *           zoom: zoom
+ *         });
  */
-var Pano = function(params, callback) {
+var Pano = function(params) {
+  eventEmitter(this);
+
   var _params = params || {};
 
   /**
@@ -41,10 +56,10 @@ var Pano = function(params, callback) {
    */
   this.location = params.location;
   /**
-   * @attribute image_date
+   * @attribute imageDate
    * @type {Date}
    */
-  this.image_date = params.imageDate;
+  this.imageDate = params.imageDate;
   /**
    * @attribute copyright
    * @type {String}
@@ -55,11 +70,6 @@ var Pano = function(params, callback) {
    * @type {Number}
    */
   this.zoom = params.zoom;
-  /**
-   * @attribute callback
-   * @type {Function}
-   */
-  this.callback = callback;
   /**
    * @attribute canvas
    * @type {Canvas Element}
@@ -72,15 +82,22 @@ var Pano = function(params, callback) {
    * @default null
    */
   this._ctx = null;
+  /**
+   * @attribute _loaded
+   * @type {Boolean}
+   */
+  this._loaded = false;
 };
 
 /**
  * Saves rotation. Input in degrees
  * @method setRotation
  * @param  {Number} deg
+ * @chainable
  */
 Pano.prototype.setRotation = function(deg) {
   this.rotation = deg * Math.PI / 180.0;
+  return this;
 };
 
 /**
@@ -103,14 +120,32 @@ Pano.prototype.initCanvas = function() {
  * Progress notification
  * @event onProgress
  * @param  {Number} p
+ * @chainable
+ * @example
+ *         pano.on('progress', function(p) {
+ *           console.log('Pano download progress: ' + p + '%');
+ *         });
  */
-Pano.prototype.onProgress = function(p) {};
-
 /**
- * @method composePanorama
- * @param {Hash} panoId
+ * Progress notification
+ * @event onComplete
+ * @param  {Pano} pano
+ * @chainable
+ * @example
+ *         pano.on('complete', function(p) {
+ *           console.log('Pano completed progress: ' + p + '%');
+ *         });
  */
-Pano.prototype.composePanorama = function() {
+/**
+ * Will fire 'callback' when completed
+ * @method compose
+ * @param {Hash} panoId
+ * @chainable
+ * @example
+ *         var pano = new Pano(...);
+ *         pano.compose();
+ */
+Pano.prototype.compose = function() {
   this.initCanvas();
 
   var w = (this.zoom == 3) ? 7 : Math.pow(2, this.zoom),
@@ -136,6 +171,7 @@ Pano.prototype.composePanorama = function() {
       this.createImage(x, y);
     }
   }
+  return this;
 };
 
 /**
@@ -159,24 +195,24 @@ Pano.prototype.createImage = function(x, y) {
  * @param {Number} x
  * @param {Number} y
  * @param {Image} texture
+ * @private
  */
 Pano.prototype.composeFromTile = function(x, y, texture) {
+  // Complete this section of the frame
   this._ctx.drawImage(texture, x * 512, y * 512);
-  console.log(x, y, this._count);
-
   this._count++;
 
   var p = Math.round(this._count * 100 / this._total);
-  this.onProgress(p);
+  this.emit('progress', p);
 
+  // If finished
   if (this._count === this._total) {
-    // Remove onProgress Callback (no pointers attached)
-    if (this.hasOwnProperty('onProgress')) {
-      this.onProgress = null;
-    }
-    if (this.callback) {
-      this.callback(this);
-    }
+    // Done loading
+    this._loaded = true;
+    // Trigger complete event
+    this.emit('complete', this);
+    // Remove all events
+    eventEmitter.alloff(this);
   }
 };
 

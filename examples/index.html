@@ -21,37 +21,45 @@
 
 <script>
     var update = function() {
-        var
-            lat = document.getElementById('lat').value,
-            lng = document.getElementById('lng').value,
-            zoom = document.getElementById('zoom').value,
-            panoBox = document.getElementById('pano'),
-            copyrightBox = document.getElementById('copyright');
+      var
+        lat = document.getElementById('lat').value,
+        lng = document.getElementById('lng').value,
+        zoom = document.getElementById('zoom').value,
+        panoBox = document.getElementById('pano'),
+        copyrightBox = document.getElementById('copyright');
 
-        // Create a loader.
-        var loader = new GSVPANO.PanoLoader({
-            zoom: zoom
-        });
+      // Create a loader.
+      var loader = new GSVPANO.PanoLoader({
+        zoom: zoom
+      });
 
-        // Set loading sign.
-        copyrightBox.innerHTML = 'Loading...';
+      // Set loading sign.
+      copyrightBox.innerHTML = 'Loading...';
 
-        // Implement the onPanoramaLoad handler
-        loader.on('panorama.load', function(pano) {
-            copyrightBox.innerHTML = pano.copyright;
-            panoBox.appendChild(pano.canvas);
-        });
+      // Implement the onPanoramaLoad handler
+      loader.on('panorama.load', function(pano) {
+        copyrightBox.innerHTML = pano.copyright;
+        while (panoBox.firstChild) {
+          panoBox.removeChild(panoBox.firstChild);
+        }
+        panoBox.appendChild(pano.canvas);
+      });
 
-        // Invoke the load method with a LatLng point.
-        loader.load(new google.maps.LatLng(lat, lng));
+      // Invoke the load method with a LatLng point.
+      loader.load(new google.maps.LatLng(lat, lng));
 
-        // Set error handle.
-        loader.on('error', function(message) {
-            alert(message);
-        });
+      // Set error handle.
+      loader.on('progress', function(p, pano) {
+        console.log('Pano progress: ' + p + '%');
+      });
+
+      // Set error handle.
+      loader.on('error', function(message) {
+        alert(message);
+      });
     }
 
-    document.getElementById( 'submit' ).addEventListener( 'click', update );
+    document.getElementById('submit').addEventListener('click', update);
     document.onload = update();
 </script>
 </body>

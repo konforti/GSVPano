@@ -14,7 +14,7 @@ var GSVPANO = GSVPANO || {};
 
 /**
  * Fetch URL. Use this parameter in case the URL stops working. At
- * the end of this string, the parameters &paramId, &x, &y, &zoom 
+ * the end of this string, the parameters &panoid, &x, &y, &zoom 
  * and the current timestamp are appended.
  * @property GSVPANO._url
  * @type {String}
@@ -42,6 +42,8 @@ GSVPANO.Pano = require('./Pano');
  * @constructor
  * @param {Object} parameters
  * @param {Number} parameters.zoom Zoom (default 1)
+ * @example
+ *       var loader = GSVPANO.PanoLoader({ zoom: 3 });
  */
 GSVPANO.PanoLoader = function(parameters) {
   'use strict';
@@ -63,35 +65,38 @@ GSVPANO.PanoLoader = function(parameters) {
     copyright = '';
 
   /**
-   * @event error
-   * @param {String} message
-   */
-  /**
-   * @event progress
-   * @param {Number} p
+   * @event panorama.data
+   * @param {Pano} pano
+   * @example
+   *     loader.on('panorama.data', function(pano){
+   *       console.log('Pano ' + pano.id + ' added');
+   *     });
    */
 
-  /**
-   * @event panorama.data
-   * @param {} result
-   */
   /**
    * @event panorama.nodata
    * @param {Google.Maps.StreetViewStatus} status
    */
 
   /**
-   * Fires progress
-   * @method setProgress
-   * @param p
-   * @private
+   * @event progress
+   * @param {Number} p
+   * @param {Pano} pano
+   * @example
+   *         loader.on('progress', function(p, pano) {
+   *           console.log('Pano progress: ' + p + '%');
+   *         });
    */
-  var setProgress = function(p) {
-    self.emit('progress', p);
+  var setProgress = function(pano, p) {
+    self.emit('progress', p, pano);
   };
   /**
    * @event panorama.load
    * @param {Pano} pano
+   * @example
+   *     loader.on('panorama.load', function(pano){
+   *       $container.append(pano.canvas);
+   *     });
    */
   var handlePanoLoad = function(callback, pano) {
     self.emit('panorama.load', pano);
@@ -101,9 +106,12 @@ GSVPANO.PanoLoader = function(parameters) {
   };
 
   /**
-   * Fires error
-   * @method throwError
+   * @event error
    * @param {String} message
+   * @example
+   *     loader.on('error', function(message){
+   *       console.log(message)
+   *     });
    */
   var throwError = function(message) {
     self.emit('error', message);
@@ -113,6 +121,7 @@ GSVPANO.PanoLoader = function(parameters) {
    * Middle function for working with IDs.
    * @method loadData
    * @param {Google.Maps.Location} location
+   * @deprecated Disabled right now
    */
   /*this.loadData = function(location) {
     var self = this;
@@ -137,6 +146,15 @@ GSVPANO.PanoLoader = function(parameters) {
    * @method load
    * @param {Google.Maps.Location} location
    * @param {Function} callback
+   * @example
+   *         // Let the panorama.load event handle it's load
+   *         loader.load(new google.maps.LatLng(lat, lng));
+   * @example
+   *         // Also handle the load individually
+   *         loader.load(new google.maps.LatLng(lat, lng), function(pano){
+   *           // This individual load has been completed
+   *           container.append(pano.canvas);
+   *         });
    */
   this.load = function(location, callback) {
     var self = this;
@@ -145,16 +163,18 @@ GSVPANO.PanoLoader = function(parameters) {
       if (status === google.maps.StreetViewStatus.OK) {
 
         var pano = new GSVPANO.Pano({
-          id: result.location.pano,
-          rotation: result.tiles.centerHeading,
-          pitch: result.tiles.originPitch,
-          copyright: result.copyright,
-          imageDate: result.imageDate,
-          location: result.location,
-          zoom: _zoom
-        }, handlePanoLoad.bind(self, callback));
+            id: result.location.pano,
+            rotation: result.tiles.centerHeading,
+            pitch: result.tiles.originPitch,
+            copyright: result.copyright,
+            imageDate: result.imageDate,
+            location: result.location,
+            zoom: _zoom
+          })
+          .on('complete', handlePanoLoad.bind(self, callback))
+          .on('progress', setProgress.bind(self, pano));
 
-        pano.composePanorama();
+        pano.compose();
         self.emit('panorama.data', pano);
       } else {
         self.emit('panorama.nodata', status);
