@@ -118,7 +118,7 @@ Pano.prototype.initCanvas = function() {
 
 /**
  * Progress notification
- * @event onProgress
+ * @event progress
  * @param  {Number} p
  * @chainable
  * @example
@@ -127,8 +127,8 @@ Pano.prototype.initCanvas = function() {
  *         });
  */
 /**
- * Progress notification
- * @event onComplete
+ * Complete notification
+ * @event complete
  * @param  {Pano} pano
  * @chainable
  * @example
@@ -152,17 +152,7 @@ Pano.prototype.compose = function() {
     h = Math.pow(2, this.zoom - 1),
     url, x, y;
 
-  /**
-   * @property _count
-   * @type {Number}
-   * @private
-   */
   this._count = 0;
-  /**
-   * @property _total
-   * @type {Number}
-   * @private
-   */
   this._total = w * h;
 
   // Get the tiles
