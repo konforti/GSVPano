@@ -1,0 +1,39 @@
+{
+  "name": "GSVPano",
+  "version": "1.0.0",
+  "homepage": "https://juampi92.github.io/GSVPano/",
+  "authors": [
+    "konforti",
+    "Juan Pablo Barreto <juampi92@gmail.com>"
+  ],
+  "description": "Google Street View Panorama Util",
+  "main": "build/GSVPano.min.js",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "Google",
+    "Street",
+    "View",
+    "Panorama"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/juampi92/GSVPano.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "docs",
+    "src",
+    ".travis.yml",
+    "package.json",
+    "Gruntfile.js",
+    "*.html",
+    "assets"
+  ]
+}
