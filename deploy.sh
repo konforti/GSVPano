@@ -25,4 +25,4 @@ git commit -m "Deploy to GitHub Pages" # It'd be good to add a deploy version to
 
 # Force push gh-pages branch (current one) with the changes made from the build
 # We redirect any output to /dev/null to hide any sensitive credential data that might otherwise be exposed.
-git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" > /dev/null 2>&1
+git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" > /dev/null 2>&1 || true
