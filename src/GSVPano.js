@@ -2,20 +2,53 @@
 // Copyright (c) 2014 Heganoo
 // https://github.com/heganoo/GSVPano
 
-/**
- * @module GSVPANO
- * @class GSVPANO.PanoLoader
- */
-var GSVPANO = {};
+var eventEmitter = require('event-emitter');
 
 /**
+ * @module GSVPANO
+ * @author Hegano
+ * @author juampi92
+ */
+var GSVPANO = GSVPANO || {};
+
+
+/**
+ * Fetch URL. Use this parameter in case the URL stops working. At
+ * the end of this string, the parameters &panoid, &x, &y, &zoom 
+ * and the current timestamp are appended.
+ * @property GSVPANO._url
+ * @type {String}
+ * @default 'http://maps.google.com/cbk?output=tile'
+ */
+// 'https://geo0.ggpht.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=tile&nbt&fover=2'
+// 'https://cbks2.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=tile'
+
+GSVPANO._url = 'http://maps.google.com/cbk?output=tile';
+
+/**
+ * Data Fetch URL. Use this parameter in case the URL stops working.
+ * At the end of this string, the parameter &ll is appended.
+ * @property GSVPANO._data_url
+ * @type {String}
+ * @default 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&radius=350'
+ */
+GSVPANO._data_url = 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&radius=350';
+
+GSVPANO.Pano = require('./Pano');
+
+/**
+ * @class PanoLoader
+ * @extends {EventEmitter}
  * @constructor
  * @param {Object} parameters
  * @param {Number} parameters.zoom Zoom (default 1)
+ * @example
+ *       var loader = GSVPANO.PanoLoader({ zoom: 3 });
  */
 GSVPANO.PanoLoader = function(parameters) {
-
   'use strict';
+
+  eventEmitter(this);
 
   var self = this,
     _parameters = parameters || {},
@@ -29,162 +62,125 @@ GSVPANO.PanoLoader = function(parameters) {
     _ctx = _canvas.getContext('2d'),
     rotation = 0,
     pitch = 0,
-    copyright = '',
-    onSizeChange = null,
-    onPanoramaLoad = null;
+    copyright = '';
 
   /**
-   * Fires onProgress
-   * @method setProgress
-   * @param p
-   * @private
+   * @event panorama.data
+   * @param {Pano} pano
+   * @example
+   *     loader.on('panorama.data', function(pano){
+   *       console.log('Pano ' + pano.id + ' added');
+   *     });
    */
-  var setProgress = function(p) {
-    if (self.onProgress) {
-      self.onProgress(p);
+
+  /**
+   * @event panorama.nodata
+   * @param {Google.Maps.StreetViewStatus} status
+   */
+
+  /**
+   * @event progress
+   * @param {Number} p
+   * @param {Pano} pano
+   * @example
+   *         loader.on('progress', function(p, pano) {
+   *           console.log('Pano progress: ' + p + '%');
+   *         });
+   */
+  var setProgress = function(pano, p) {
+    self.emit('progress', p, pano);
+  };
+  /**
+   * @event panorama.load
+   * @param {Pano} pano
+   * @example
+   *     loader.on('panorama.load', function(pano){
+   *       $container.append(pano.canvas);
+   *     });
+   */
+  var handlePanoLoad = function(callback, pano) {
+    self.emit('panorama.load', pano);
+    if (callback) {
+      callback(pano);
     }
   };
 
   /**
-   * Fires onError
-   * @method throwError
+   * @event error
    * @param {String} message
+   * @example
+   *     loader.on('error', function(message){
+   *       console.log(message)
+   *     });
    */
-  this.throwError = function(message) {
-    if (this.onError) {
-      this.onError(message);
-    } else {
-      console.error(message);
-    }
-  };
-
-  /**
-   * @method adaptTextureToZoom
-   */
-  this.adaptTextureToZoom = function() {
-
-    var w = 416 * Math.pow(2, _zoom),
-      h = (416 * Math.pow(2, _zoom - 1));
-    _canvas.width = w;
-    _canvas.height = h;
-    //    _ctx.translate( _canvas.width, 0 );
-    //    _ctx.scale( -1, 1 );
-  };
-
-  /**
-   * Fires onPanoramaLoad
-   * @method composeFromTile
-   * @param {Number} x
-   * @param {Number} y
-   * @param {Image} texture
-   */
-  this.composeFromTile = function(x, y, texture) {
-
-    _ctx.drawImage(texture, x * 512, y * 512);
-    _count++;
-
-    var p = Math.round(_count * 100 / _total);
-    setProgress(p);
-
-    if (_count === _total) {
-      this.canvas = _canvas;
-      if (this.onPanoramaLoad) {
-        this.onPanoramaLoad();
-      }
-    }
-
-  };
-
-  /**
-   * @method composePanorama
-   * @param {Hash} panoId
-   */
-  this.composePanorama = function(panoId) {
-    setProgress(0);
-    var
-      w = (_zoom == 3) ? 7 : Math.pow(2, _zoom),
-      h = Math.pow(2, _zoom - 1),
-      self = this,
-      url, x, y;
-
-    _count = 0;
-    _total = w * h;
-
-    /**
-     * Get the tiles.
-     */
-    for (y = 0; y < h; y++) {
-      for (x = 0; x < w; x++) {
-        //        url = 'https://geo0.ggpht.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&panoid=' + _panoId + '&output=tile&x=' + x + '&y=' + y + '&zoom=' + _zoom + '&nbt&fover=2';
-        //        url = 'https://cbks2.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&panoid=' + _panoId + '&output=tile&zoom=' + _zoom + '&x=' + x + '&y=' + y + '&' + Date.now();
-        url = 'http://maps.google.com/cbk?output=tile&panoid=' + _panoId + '&zoom=' + _zoom + '&x=' + x + '&y=' + y + '&' + Date.now();
-        //(function(x, y) {
-          var img = new Image();
-          img.addEventListener('load', self.composeFromTile.bind(self, x, y, img));
-          img.crossOrigin = '';
-          img.src = url;
-        //})(x, y);
-      }
-    }
+  var throwError = function(message) {
+    self.emit('error', message);
   };
 
   /**
    * Middle function for working with IDs.
    * @method loadData
    * @param {Google.Maps.Location} location
+   * @deprecated Disabled right now
    */
-  this.loadData = function(location) {
+  /*this.loadData = function(location) {
     var self = this;
     var url;
 
-    url = 'https://maps.google.com/cbk?output=json&hl=x-local&ll=' + location.lat() + ',' + location.lng() + '&cb_client=maps_sv&v=3';
-    url = 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&ll=' + location.lat() + ',' + location.lng() + '&radius=350';
+    //url = 'https://maps.google.com/cbk?output=json&hl=x-local&ll=' + location.lat() + ',' + location.lng() + '&cb_client=maps_sv&v=3';
+    url = GSVPANO._data_url + '&ll=' + location.lat() + ',' + location.lng();
 
     var http_request = new XMLHttpRequest();
     http_request.open("GET", url, true);
     http_request.onreadystatechange = function() {
       if (http_request.readyState == 4 && http_request.status == 200) {
         var data = JSON.parse(http_request.responseText);
-        self.loadPano(location, data.result[0].id);
+        // self.loadPano(location, data.result[0].id);
       }
     };
     http_request.send(null);
-  };
-
+  };*/
 
   /**
-   * Fires onPanoramaData, onNoPanoramaData
+   * Fires panorama.data, panorama.nodata
    * @method load
    * @param {Google.Maps.Location} location
-   * @param {Hash} id
+   * @param {Function} callback
+   * @example
+   *         // Let the panorama.load event handle it's load
+   *         loader.load(new google.maps.LatLng(lat, lng));
+   * @example
+   *         // Also handle the load individually
+   *         loader.load(new google.maps.LatLng(lat, lng), function(pano){
+   *           // This individual load has been completed
+   *           container.append(pano.canvas);
+   *         });
    */
-  this.load = function(location, id) {
+  this.load = function(location, callback) {
     var self = this;
-    //    _panoClient.getPanoramaById( id, function (result, status) {
+
     _panoClient.getPanoramaByLocation(location, 50, function(result, status) {
       if (status === google.maps.StreetViewStatus.OK) {
-        if (self.onPanoramaData) {
-          self.onPanoramaData(result);
-        }
-        rotation = result.tiles.centerHeading * Math.PI / 180.0;
-        pitch = result.tiles.originPitch;
-        copyright = result.copyright;
-        self.copyright = result.copyright;
-        _panoId = result.location.pano;
-        self.location = location;
-        self.rotation = rotation;
-        self.pitch = pitch;
-        self.image_date = result.imageDate;
-        self.id = _panoId;
-        self.composePanorama();
+
+        var pano = new GSVPANO.Pano({
+            id: result.location.pano,
+            rotation: result.tiles.centerHeading,
+            pitch: result.tiles.originPitch,
+            copyright: result.copyright,
+            imageDate: result.imageDate,
+            location: result.location,
+            zoom: _zoom
+          })
+          .on('complete', handlePanoLoad.bind(self, callback))
+          .on('progress', setProgress.bind(self, pano));
+
+        pano.compose();
+        self.emit('panorama.data', pano);
       } else {
-        if (self.onNoPanoramaData) {
-          self.onNoPanoramaData(status);
-        }
-        self.throwError('Could not retrieve panorama for the following reason: ' + status);
+        self.emit('panorama.nodata', status);
+        throwError('Could not retrieve panorama for the following reason: ' + status);
       }
     });
-
   };
 
   /**
@@ -193,7 +189,6 @@ GSVPANO.PanoLoader = function(parameters) {
    */
   this.setZoom = function(z) {
     _zoom = z;
-    this.adaptTextureToZoom();
   };
 
   // Default zoom.
