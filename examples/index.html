@@ -12,22 +12,17 @@
       color: #777;
       background: #222;
     }
-
     #form-wrp {
       position: absolute;
       top: 30px;
       left: 30px;
     }
-
     #form-wrp #zoom {
       width: 50px;
     }
-
     #form-wrp input {
       padding: 5px;
     }
-
-
     #copyright {
       position: absolute;
       bottom: 30px;
@@ -42,9 +37,9 @@
 </head>
 <body>
 <div id="form-wrp">
-    <input type="text" id="lat" placeholder="Lat" value="32.472170" />
-    <input type="text" id="lng" placeholder="Lat" value="34.996909" />
-    <input type="text" id="zoom" placeholder="zoom" value="3" />
+    <input type="text" id="lat" placeholder="Lat" value="48.8589137" />
+    <input type="text" id="lng" placeholder="Lat" value="2.2933281" />
+    <input type="text" id="zoom" placeholder="zoom" value="2" />
     <input type="button" id="submit" value="Submit" />
 </div>
 <div id="pano"></div>
@@ -57,7 +52,10 @@
         lng = document.getElementById('lng').value,
         zoom = document.getElementById('zoom').value,
         panoBox = document.getElementById('pano'),
-        copyrightBox = document.getElementById('copyright');
+        copyrightBox = document.getElementById('copyright'),
+        submitButton = document.getElementById('submit');
+
+      submitButton.disabled = 'disabled';
 
       // Create a loader.
       var loader = new GSVPANO.PanoLoader({
@@ -69,29 +67,32 @@
 
       // Implement the onPanoramaLoad handler
       loader.on('panorama.load', function(pano) {
-        copyrightBox.innerHTML = pano.copyright;
+        var canvas = pano.canvas;
+        copyrightBox.innerHTML = pano.copyright + ' - ' + canvas.width + 'x' + canvas.height + 'px';
         while (panoBox.firstChild) {
           panoBox.removeChild(panoBox.firstChild);
         }
-        panoBox.appendChild(pano.canvas);
+        panoBox.appendChild(canvas);
+        submitButton.disabled = '';
       });
 
       // Invoke the load method with a LatLng point.
       loader.load(new google.maps.LatLng(lat, lng));
 
       // Set error handle.
-      loader.on('progress', function(p, pano) {
-        console.log('Pano progress: ' + p + '%');
+      loader.on('panorama.progress', function(p, pano) {
+        copyrightBox.innerHTML = 'Loading... ' + p + '%';
       });
 
       // Set error handle.
       loader.on('error', function(message) {
         alert(message);
+        submitButton.disabled = '';
       });
     }
 
     document.getElementById('submit').addEventListener('click', update);
-    document.onload = update();
+    update();
 </script>
 </body>
 </html>

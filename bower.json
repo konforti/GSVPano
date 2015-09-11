@@ -27,13 +27,12 @@
     "**/.*",
     "node_modules",
     "bower_components",
+    "examples",
     "test",
     "docs",
     "src",
-    ".travis.yml",
-    "package.json",
-    "Gruntfile.js",
-    "*.html",
-    "assets"
+    "page",
+    "gh-pages",
+    "Gruntfile.js"
   ]
 }

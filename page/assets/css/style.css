@@ -1,0 +1,36 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+section {
+  height: auto;  
+  margin: 0 auto; 
+  width: 100%; 
+  position: relative; 
+  padding: 50px 0;
+  background-color: white; 
+}
+
+.parallax {  
+  box-shadow: 0 0 -50px rgba(0,0,0,0.8);
+  padding: 100px 0;
+  color: white;
+  font-weight: bold;
+  text-shadow: black 1px 1px 3px;
+}
+.parallax h1 {
+  font-size: 50px;  
+  text-shadow: black 1px 1px 5px;
+}
+.parallax.bg_antarctica { 
+  background: url(../img/antarctica.png) 0% 0 fixed; 
+  /*background: white;*/
+  padding: 100px 0;
+}
+.parallax.bg_stonehenge { 
+  background: url(../img/stonehenge.png) 50% 0 fixed;
+}
+.parallax.bg_timessquare {
+  background: url(../img/timessquare.png) 50% 0 fixed;
+}

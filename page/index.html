@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Street View Pano - Project Page</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="docs/assets/vendor/bootstrap/css/bootstrap-3.3.1.min.css" rel="stylesheet" media="screen">
+  <link href="assets/css/style.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" type="text/css">
+
+  <script type="text/javascript" src="docs/assets/vendor/jquery/jquery-1.11.2.min.js"></script>
+  <script type="text/javascript" src="docs/assets/vendor/bootstrap/js/bootstrap-3.3.1.min.js"></script>
+  <script type="text/javascript" src="assets/js/script.js"></script>
+</head>
+
+<body>
+
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">GSVPano</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="docs/">Documentation</a></li>
+        <li><a href="examples/index.html">Examples</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="parallax bg_antarctica" data-speed="5" data-type="background" data-start="-200">
+    <div class="container">
+      <h1>GSVPano.js</h1>
+      <h3>Library to help requesting and stitching Google Street View panoramas.</h3>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h1>Google Street View Panorama</h1>
+      <h4>Download Google SV images, knowing only it's coordinates. Easy to use, easy to escalate.</h4>
+      <br>
+      <a href="examples/index.html" class="btn btn-primary" target="_blank">Check an Example</a>
+    </div>
+
+  </section>
+
+  <section class="parallax bg_stonehenge" data-speed="1.1" data-type="background" data-start="150">
+    <div class="container">
+      <h2>Fully documented</h2>
+      <a href="docs/" class="btn btn-primary" target="_blank">View Documentation</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Get it working only with a few lines!</h2>
+      <p>You can also install GSVPano using <a href="https://www.npmjs.com">npm</a>:</p>
+      <div class="highlight">
+        <pre style="color:#000; text-align: left"><code><span style="color:#406040">// Create a PanoLoader object</span>
+<span style="color:#a08000">var</span> loader <span style="color:#2060a0">=</span> <span style="color:#2060a0">new</span> GSVPANO.PanoLoader({
+    zoom: <span style="color:#0080a0">3</span>
+});
+
+<span style="color:#406040">// Implement the onPanoramaLoad handler</span>
+loader.on(<span style="color:#c03030">'panorama.load'</span>, <span style="color:#a08000">function</span>(panorama) {
+    <span style="color:#406040">// panorama.canvas ready to use</span>
+});
+
+<span style="color:#406040">// Invoke the load method with a LatLng point</span>
+loader.load( <span style="color:#2060a0">new</span> google.maps.LatLng( <span style="color:#0080a0">42.216188</span>,<span style="color:#2060a0">-</span><span style="color:#0080a0">75.726578</span> ) );
+</pre></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="parallax bg_timessquare" data-speed="1.5" data-type="background" data-start="0">
+    <div class="container">
+      <h1>Start using it now!</h1>
+      <a href="https://juampi92.github.io/GSVPano/build/GSVPano.js" class="btn btn-primary" target="_blank">Download</a> 
+      <a href="https://juampi92.github.io/GSVPano/build/GSVPano.min.js" class="btn btn-primary" target="_blank">Download minified</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Github CDN</h2>      
+      <pre style="color:#586e75"><code><span style="color:#839496;font-style:italic">&lt;!-- Latest compiled and minified --></span>
+<span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">script</span> <span style="color:#93a1a1">src</span>=<span style="color:#269186"><span style="color:#269186">"</span>//juampi92.github.io/GSVPano/build/GSVPano.min.js<span style="color:#269186">"</span></span><span style="color:#93a1a1">>&lt;/</span><span style="color:#268bd2;font-weight:700">script</span><span style="color:#93a1a1">></span>
+
+<span style="color:#839496;font-style:italic">&lt;!-- Not minified --></span>
+<span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">script</span> <span style="color:#93a1a1">src</span>=<span style="color:#269186"><span style="color:#269186">"</span>//juampi92.github.io/GSVPano/build/GSVPano.js<span style="color:#269186">"</span></span><span style="color:#93a1a1">>&lt;/</span><span style="color:#268bd2;font-weight:700">script</span><span style="color:#93a1a1">></span>
+
+<span style="color:#839496;font-style:italic">&lt;!-- Custom version --></span>
+<span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">script</span> <span style="color:#93a1a1">src</span>=<span style="color:#269186"><span style="color:#269186">"</span>//juampi92.github.io/GSVPano/build/GSVPano-1.0.0.min.js<span style="color:#269186">"</span></span><span style="color:#93a1a1">>&lt;/</span><span style="color:#268bd2;font-weight:700">script</span><span style="color:#93a1a1">></span>
+</code></pre>
+
+      <h2>Install with Bower</h2>
+      <div class="highlight">
+        <pre><code><span style="color:#268bd2;font-weight:700">$ </span>bower install GSVPano</code></pre>
+      </div>
+
+      <h2>Install with npm</h2>
+      <p>You can also install GSVPano using <a href="https://www.npmjs.com">npm</a>:</p>
+      <div class="highlight">
+        <pre><code><span style="color:#268bd2;font-weight:700">$ </span>npm install bootstrap</code></pre>
+      </div>
+      <p><code>require('GSVPano')</code> will get you the library, and it's ready for you to use it with <b>Browserify</b> or whichever front end bundler you want.</p>
+    </div>
+  </section>
+
+  <footer>
+  </footer>
+
+</body>
+
+</html>

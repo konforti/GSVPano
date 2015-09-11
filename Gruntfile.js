@@ -4,10 +4,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-yuidoc');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-watchify');
+  grunt.loadNpmTasks('grunt-contrib-handlebars');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-watchify');
 
   // Configs
   grunt.initConfig({
@@ -15,11 +16,11 @@ module.exports = function(grunt) {
 
     uglify: {
       options: {
-        banner: '/*!\n * <%= pkg.name %> v<%= pkg.version %>\n * (c) <%= pkg.author %> - <%= pkg.homepage %>\n * License: MIT (http://www.opensource.org/licenses/mit-license.php)\n*/\n'
+        banner: '/*!\n * <%= pkg.name %> v<%= pkg.version %>\n * (c) <%= pkg.homepage %>\n * License: <%= pkg.license %>\n*/\n'
       },
       build: {
-        src: 'build/GSVPano.js',
-        dest: 'build/GSVPano.min.js'
+        src: 'build/<%= pkg.name %>.js',
+        dest: 'build/<%= pkg.name %>.min.js'
       }
     },
 
@@ -37,9 +38,8 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         files: {
-          'build/GSVPano.js': 'src/GSVPano.js'
-        },
-        options: {}
+          'build/<%= pkg.name %>.js': 'src/<%= pkg.name %>.js'
+        }
       }
     },
 
@@ -54,25 +54,47 @@ module.exports = function(grunt) {
         keepalive: true
       },
       dev: {
-        src: './src/GSVPano.js',
-        dest: 'build/GSVPano.js'
+        src: './src/<%= pkg.name %>.js',
+        dest: 'build/<%= pkg.name %>.js'
       }
     },
 
     copy: {
       buildversion: {
         files: [{
-          src: 'build/GSVPano.js',
-          dest: 'build/GSVPano-<%= pkg.version %>.js'
+          src: 'build/<%= pkg.name %>.js',
+          dest: 'build/<%= pkg.name %>-<%= pkg.version %>.js'
         }, {
-          src: 'build/GSVPano.min.js',
-          dest: 'build/GSVPano-<%= pkg.version %>.min.js'
+          src: 'build/<%= pkg.name %>.min.js',
+          dest: 'build/<%= pkg.name %>-<%= pkg.version %>.min.js'
         }, ]
+      },
+
+      ghpages: {
+        files: [{
+          expand: true,
+          src: 'build/**/*',
+          dest: 'gh-pages/'
+        }, {
+          expand: true,
+          src: 'docs/**/*',
+          dest: 'gh-pages/'
+        }, {
+          expand: true,
+          src: 'examples/**/*',
+          dest: 'gh-pages/'
+        }, {
+          expand: true,
+          cwd: 'page/',
+          src: '**/*', // page/assets/*
+          dest: 'gh-pages/'
+        }]
       },
     },
 
     clean: {
-      build: ["build", "docs"]
+      build: ['build', 'docs'],
+      ghpages: ['gh-pages/docs', 'gh-pages/assets', 'gh-pages/examples']
     },
 
     yuidoc: {
@@ -88,8 +110,7 @@ module.exports = function(grunt) {
           helpers: ['node_modules/yuidoc-bootstrap-theme/helpers/helpers.js']
         }
       }
-    }
-
+    },
 
   });
 
@@ -102,6 +123,11 @@ module.exports = function(grunt) {
     'uglify',
     'yuidoc:compile',
     'copy:buildversion'
+  ]);
+
+  grunt.registerTask('gh-pages', [
+    'clean:ghpages',
+    'copy:ghpages'
   ]);
 
   grunt.registerTask('watch', ['watchify:dev']);

@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/juampi92/GSVPano.svg?branch=master)](https://travis-ci.org/juampi92/GSVPano)
 
 Library to help requesting and stitching Google Street View panoramas.
+
 Given a Google Maps Location, this library downloads each part of the corresponding panorama, and gives you the complete image ready to use.
 
 ## Simple Example
@@ -13,7 +14,7 @@ var loader = new GSVPANO.PanoLoader({
 });
 
 // Implement the onPanoramaLoad handler
-loader.on('complete', function(panorama) {
+loader.on('panorama.load', function(panorama) {
 	// panorama.canvas ready to use
 });
 
@@ -34,20 +35,20 @@ Remember that you'll need google.maps API, so don't forget this script tag.
 ##### Github CDN
 
 ```html
-<script src="http://juampi92.github.io/GSVPano/build/GSVPano.min.js"></script>
+<script src="//juampi92.github.io/GSVPano/build/GSVPano.min.js"></script>
 ````
 
 Or you can just use it with a specific version:
 
 ```html
-<script src="http://juampi92.github.io/GSVPano/build/GSVPano-1.0.0.min.js"></script>
+<script src="//juampi92.github.io/GSVPano/build/GSVPano-1.0.0.min.js"></script>
 ````
 
-##### [Bower](http://bower.io)
+##### Bower
 
     $ bower install GSVPano
 
-##### [npm](http://npmjs.org)
+##### npm
 
     $ npm install GSVPano
 
@@ -61,6 +62,7 @@ And you can require the source files and compile it using browserify
  * `panorama.nodata ( location, status )` When the location had trouble fetching the panorama
  * `panorama.progress ( p , pano )` Shows the panorama load progress
  * `panorama.load ( pano )` When the panorama has finished loading
+ * `error ( message )` When the panorama has finished loading
 
 ```js
 loader.on('panorama.data', function(pano) { 
@@ -80,6 +82,7 @@ loader.on('panorama.data', function(pano) {
 First, do
 
 		$ npm install
+		$ npm install -g grunt-cli
 
 to get all the dependencies.
 
@@ -94,7 +97,7 @@ If you just wanna build it with browserify, use
 that will watchify the `src/` folder.
 
 
-Forks, pull requests and code critiques are welcome!
+##### Forks, pull requests and code critiques are welcome!
 
 ## License
 

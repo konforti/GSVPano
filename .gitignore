@@ -1,6 +1,4 @@
 node_modules/
 docs/
-examples/
 build/
-*.html
-assets/
+gh-pages/

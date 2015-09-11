@@ -8,9 +8,7 @@ grunt build
 rm -rf gh-pages || exit 0;
 git clone --branch=gh-pages "git://${GH_REF}" gh-pages
 
-# Take everything built that you want to add to gh-pages
-cp -r build/ gh-pages/
-cp -r docs/ gh-pages/
+grunt gh-pages
 
 # Go to the branch
 cd gh-pages
@@ -20,7 +18,7 @@ git config user.name "Travis CI"
 git config user.email "juampi92@gmail.com"
 
 # Add changes (based on the replacement done earlier)
-git add .
+git add --all .
 git commit -m "Deploy to GitHub Pages" || true # Or true, so if there's nothing to commit, don't trow an error
 
 # Force push gh-pages branch (current one) with the changes made from the build
