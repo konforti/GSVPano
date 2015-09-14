@@ -99,12 +99,6 @@ GSVPANO.PanoLoader = function(parameters) {
    *       $container.append(pano.canvas);
    *     });
    */
-  var handlePanoLoad = function(callback, pano) {
-    self.emit('panorama.load', pano);
-    if (callback) {
-      callback(pano);
-    }
-  };
 
   /**
    * @event error
@@ -161,6 +155,7 @@ GSVPANO.PanoLoader = function(parameters) {
     var self = this;
 
     _panoClient.getPanoramaByLocation(location, 50, function(result, status) {
+
       if (status === google.maps.StreetViewStatus.OK) {
 
         var pano = new GSVPANO.Pano({
@@ -172,11 +167,14 @@ GSVPANO.PanoLoader = function(parameters) {
             location: result.location,
             zoom: _zoom
           })
-          .on('complete', handlePanoLoad.bind(self, callback))
+          .on('complete', self.emit.bind(self, 'panorama.load'))
           .on('progress', setProgress.bind(self, pano));
 
         pano.compose();
         self.emit('panorama.data', pano);
+        if (callback) {
+          callback(pano);
+        }
       } else {
         self.emit('panorama.nodata', location, status);
         throwError('Could not retrieve panorama for the following reason: ' + status);
