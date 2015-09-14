@@ -56,7 +56,7 @@ Or you can just use it with a specific version:
 
 ##### npm
 
-    $ npm install GSVPano
+    $ npm install gsvpano
 
 And you can require the source files and compile it using browserify
 

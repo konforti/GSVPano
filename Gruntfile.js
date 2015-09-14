@@ -15,11 +15,11 @@ module.exports = function(grunt) {
 
     uglify: {
       options: {
-        banner: '/*!\n * <%= pkg.name %> v<%= pkg.version %>\n * (c) <%= pkg.homepage %>\n * License: <%= pkg.license %>\n*/\n'
+        banner: '/*!\n * <%= pkg.pkgname %> v<%= pkg.version %>\n * (c) <%= pkg.homepage %>\n * License: <%= pkg.license %>\n*/\n'
       },
       build: {
-        src: 'build/<%= pkg.name %>.js',
-        dest: 'build/<%= pkg.name %>.min.js'
+        src: 'build/<%= pkg.pkgname %>.js',
+        dest: 'build/<%= pkg.pkgname %>.min.js'
       }
     },
 
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         files: {
-          'build/<%= pkg.name %>.js': 'src/<%= pkg.name %>.js'
+          'build/<%= pkg.pkgname %>.js': 'src/<%= pkg.pkgname %>.js'
         }
       }
     },
@@ -53,19 +53,19 @@ module.exports = function(grunt) {
         keepalive: true
       },
       dev: {
-        src: './src/<%= pkg.name %>.js',
-        dest: 'build/<%= pkg.name %>.js'
+        src: './src/<%= pkg.pkgname %>.js',
+        dest: 'build/<%= pkg.pkgname %>.js'
       }
     },
 
     copy: {
       buildversion: {
         files: [{
-          src: 'build/<%= pkg.name %>.js',
-          dest: 'build/<%= pkg.name %>-<%= pkg.version %>.js'
+          src: 'build/<%= pkg.pkgname %>.js',
+          dest: 'build/<%= pkg.pkgname %>-<%= pkg.version %>.js'
         }, {
-          src: 'build/<%= pkg.name %>.min.js',
-          dest: 'build/<%= pkg.name %>-<%= pkg.version %>.min.js'
+          src: 'build/<%= pkg.pkgname %>.min.js',
+          dest: 'build/<%= pkg.pkgname %>-<%= pkg.version %>.min.js'
         }, ]
       },
 
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
 
     yuidoc: {
       compile: {
-        name: '<%= pkg.name %>',
+        name: '<%= pkg.pkgname %>',
         description: '<%= pkg.description %>',
         version: '<%= pkg.version %>',
         url: '<%= pkg.homepage %>',
