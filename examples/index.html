@@ -42,7 +42,7 @@
     <input type="text" id="zoom" placeholder="zoom" value="2" />
     <input type="button" id="submit" value="Submit" />
 </div>
-<div id="pano"></div>
+<div id="pano" style="display: inline"></div>
 <div id="copyright"></div>
 
 <script>
@@ -68,12 +68,16 @@
       // Implement the onPanoramaLoad handler
       loader.on('panorama.load', function(pano) {
         var canvas = pano.canvas;
-        copyrightBox.innerHTML = pano.copyright + ' - ' + canvas.width + 'x' + canvas.height + 'px';
+        copyrightBox.innerHTML = pano.copyright + ' - ' + canvas.width + 'x' + canvas.height + 'px';        
+        submitButton.disabled = '';
+      });
+
+      loader.on('panorama.data', function(pano) {
+        var canvas = pano.canvas;
         while (panoBox.firstChild) {
           panoBox.removeChild(panoBox.firstChild);
         }
         panoBox.appendChild(canvas);
-        submitButton.disabled = '';
       });
 
       // Invoke the load method with a LatLng point.
@@ -88,6 +92,7 @@
       loader.on('error', function(message) {
         alert(message);
         submitButton.disabled = '';
+        opyrightBox.innerHTML = '';
       });
     }
 
