@@ -16,8 +16,12 @@ var loader = new GSVPANO.PanoLoader({
 // Implement the onPanoramaLoad handler
 loader.on('panorama.load', function(panorama) {
 	// panorama will now be loaded
-  // panorama.on('progress', changeProgress); for individual progress
-  // panorama.on('complete', completeCallback); for individual completeness progress
+
+  // for individual progress
+  panorama.on('progress', changeProgress); 
+  
+  // for individual complete callback
+  panorama.on('complete', completeCallback);
 });
 
 // Invoke the load method with a LatLng point
