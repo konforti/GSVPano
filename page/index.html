@@ -24,6 +24,7 @@
         <a class="navbar-brand" href="/">GSVPano</a>
       </div>
       <ul class="nav navbar-nav">
+        <li><a href="https://github.com/juampi92/GSVPano" target="_blank">GitHub</a></li>
         <li><a href="docs/">Documentation</a></li>
         <li><a href="examples/index.html">Examples</a></li>
       </ul>
@@ -42,7 +43,7 @@
       <h1>Google Street View Panorama</h1>
       <h4>Download Google SV images, knowing only it's coordinates. Easy to use, easy to escalate.</h4>
       <br>
-      <a href="examples/index.html" class="btn btn-primary" target="_blank">Check an Example</a>
+      <a href="examples/index.html" class="btn btn-primary">Check an Example</a>
     </div>
 
   </section>
@@ -50,14 +51,14 @@
   <section class="parallax bg_stonehenge" data-speed="1.1" data-type="background" data-start="150">
     <div class="container">
       <h2>Fully documented</h2>
-      <a href="docs/" class="btn btn-primary" target="_blank">View Documentation</a>
+      <a href="docs/" class="btn btn-primary">View Documentation</a>
     </div>
   </section>
 
   <section>
     <div class="container">
       <h2>Get it working only with a few lines!</h2>
-      <p>You can also install GSVPano using <a href="https://www.npmjs.com">npm</a>:</p>
+      <p>Check out this simple example:</p>
       <div class="highlight">
         <pre style="color:#000; text-align: left"><code><span style="color:#406040">// Create a PanoLoader object</span>
 <span style="color:#a08000">var</span> loader <span style="color:#2060a0">=</span> <span style="color:#2060a0">new</span> GSVPANO.PanoLoader({
@@ -66,7 +67,13 @@
 
 <span style="color:#406040">// Implement the onPanoramaLoad handler</span>
 loader.on(<span style="color:#c03030">'panorama.load'</span>, <span style="color:#a08000">function</span>(panorama) {
-    <span style="color:#406040">// panorama.canvas ready to use</span>
+    <span style="color:#406040">// panorama will now be loaded</span>
+
+    <span style="color:#406040">// for individual progress</span>
+    panorama.on(<span style="color:#c03030">'progress'</span>, changeProgress); 
+  
+    <span style="color:#406040">// for individual complete callback</span>
+    panorama.on(<span style="color:#c03030">'complete'</span>, completeCallback);
 });
 
 <span style="color:#406040">// Invoke the load method with a LatLng point</span>
@@ -87,6 +94,7 @@ loader.load( <span style="color:#2060a0">new</span> google.maps.LatLng( <span st
   <section>
     <div class="container">
       <h2>Github CDN</h2>      
+      <p>Check out other builds <a href="https://github.com/juampi92/GSVPano/tree/gh-pages/build" target="_blank">here</a>.</p>
       <pre style="color:#586e75"><code><span style="color:#839496;font-style:italic">&lt;!-- Latest compiled and minified --></span>
 <span style="color:#93a1a1">&lt;</span><span style="color:#268bd2;font-weight:700">script</span> <span style="color:#93a1a1">src</span>=<span style="color:#269186"><span style="color:#269186">"</span>//juampi92.github.io/GSVPano/build/GSVPano.min.js<span style="color:#269186">"</span></span><span style="color:#93a1a1">>&lt;/</span><span style="color:#268bd2;font-weight:700">script</span><span style="color:#93a1a1">></span>
 
