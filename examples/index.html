@@ -5,52 +5,99 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Gsvpano.js</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
+    <style type="text/css">body {
+      padding: 0;
+      margin: 0;
+      font: 14px/1.5 Helvetica, Arial, sans-serif;
+      color: #777;
+      background: #222;
+    }
+    #form-wrp {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+    }
+    #form-wrp #zoom {
+      width: 50px;
+    }
+    #form-wrp input {
+      padding: 5px;
+    }
+    #copyright {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      color: #fff;
+      text-shadow: 1px 1px 1px #000;
+      font-size: 17px;
+    }
+    </style>
     <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-    <script src="javascripts/GSVPano.js"></script>
+    <script src="../build/GSVPano.js"></script>
 </head>
 <body>
 <div id="form-wrp">
-    <input type="text" id="lat" placeholder="Lat" value="32.472170" />
-    <input type="text" id="lng" placeholder="Lat" value="34.996909" />
-    <input type="text" id="zoom" placeholder="zoom" value="3" />
+    <input type="text" id="lat" placeholder="Lat" value="48.8589137" />
+    <input type="text" id="lng" placeholder="Lat" value="2.2933281" />
+    <input type="text" id="zoom" placeholder="zoom" value="2" />
     <input type="button" id="submit" value="Submit" />
 </div>
-<div id="pano"></div>
+<div id="pano" style="display: inline"></div>
 <div id="copyright"></div>
 
 <script>
-    var update = function () {
-        var
-            lat = document.getElementById( 'lat' ).value,
-            lng = document.getElementById( 'lng' ).value,
-            zoom = document.getElementById( 'zoom' ).value,
-            panoBox = document.getElementById( 'pano' ),
-            copyrightBox = document.getElementById( 'copyright' );
+    var update = function() {
+      var
+        lat = document.getElementById('lat').value,
+        lng = document.getElementById('lng').value,
+        zoom = document.getElementById('zoom').value,
+        panoBox = document.getElementById('pano'),
+        copyrightBox = document.getElementById('copyright'),
+        submitButton = document.getElementById('submit');
 
-        // Create a loader.
-        var loader = new GSVPANO.PanoLoader( {zoom: zoom} );
+      submitButton.disabled = 'disabled';
 
-        // Set loading sign.
-        copyrightBox.innerHTML = 'Loading...';
+      // Create a loader.
+      var loader = new GSVPANO.PanoLoader({
+        zoom: zoom
+      });
 
-        // Implement the onPanoramaLoad handler
-        loader.onPanoramaLoad = function () {
-            copyrightBox.innerHTML = this.copyright;
-            panoBox.appendChild(this.canvas);
-        };
+      // Set loading sign.
+      copyrightBox.innerHTML = 'Loading...';
 
-        // Invoke the load method with a LatLng point.
-        loader.load( new google.maps.LatLng( lat, lng ) );
+      // Implement the onPanoramaLoad handler
+      loader.on('panorama.load', function(pano) {
+        var canvas = pano.canvas;
+        copyrightBox.innerHTML = pano.copyright + ' - ' + canvas.width + 'x' + canvas.height + 'px';        
+        submitButton.disabled = '';
+      });
 
-        // Set error handle.
-        loader.onError = function( message ) {
-            alert( message );
+      loader.on('panorama.data', function(pano) {
+        var canvas = pano.canvas;
+        while (panoBox.firstChild) {
+          panoBox.removeChild(panoBox.firstChild);
         }
+        panoBox.appendChild(canvas);
+      });
+
+      // Invoke the load method with a LatLng point.
+      loader.load(new google.maps.LatLng(lat, lng));
+
+      // Set error handle.
+      loader.on('panorama.progress', function(p, pano) {
+        copyrightBox.innerHTML = 'Loading... ' + p + '%';
+      });
+
+      // Set error handle.
+      loader.on('error', function(message) {
+        alert(message);
+        submitButton.disabled = '';
+        opyrightBox.innerHTML = '';
+      });
     }
 
-    document.getElementById( 'submit' ).addEventListener( 'click', update );
-    document.onload = update();
+    document.getElementById('submit').addEventListener('click', update);
+    update();
 </script>
 </body>
 </html>

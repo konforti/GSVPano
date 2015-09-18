@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- "0.12"
+env:
+  global:
+  - GH_REF: github.com/juampi92/GSVPano.git
+  - secure: "ghnO4pt9ewFtOdhwMHi1x9Ol5p3XBfBl7DYtJs4xMLKFq6e7toJZKClWZ+3mBGqqZz3jlw6xeq4PbGkQPczc/P1LkwykajzOFKWGnYi68RdWr20HAcSULGpKilMHN5JH3xJkYzsYKBDuH4P43R0rbY8b3KGxtQwArhJAox1CkEeM/M2SiFXgDrfy2ZBr51P7gG3gdW+3bzZsl7Ntg/l5HQT2nY68XOoGSkPR/STo7iLAmIm/dyym0/Ao3gPSQBLhSp88PkjqPlvALdTDibvFDC6TXzTM0fIvFeefu0ZWmaE2TYhMA9QolCZiy4CJiYXtg82dUmmXBsJQjHMVq+8OeW2fcztaui/PepBHGkeecpTj1QzUUvtkRFf9A7+erbzdWV9bQQ81mVnQ045Rri87DezO99YwbTrgjoQeFYojTXXvcKFPugMxx1aQPmzyBHqmRNpBOZOlsOESfqVEAF3nlgK89mB+m3eURNecr2aHJ0qbElBYSmq1jSoC5xnKJoX+TM2uOZJg42+K9pHjIBZVk2rUSgvJ2pt2X54qUZgg4U8vvIeeDTD416gyPli9ZOkNmBJ3tfzhJjIC+PDYA8tSvbL54+piGqPp2hG2/tOn1FZDg0aFkBbIUq7tQWhGMj9v0kaFPTX5muYu91Djy+JzpMyswuROlm1JCMvT+l+dsTk="
+before_script:
+  - npm install grunt-cli -g
+script: bash ./deploy.sh
+branches:
+  only:
+    - master

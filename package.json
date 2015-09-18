@@ -1,0 +1,46 @@
+{
+  "name": "gsvpano",
+  "pkgname": "GSVPano",
+  "version": "1.0.0",
+  "description": "Google Street View Panorama Util",
+  "main": "src/GSVPano.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juampi92/GSVPano"
+  },
+  "keywords": [
+    "Google",
+    "Street",
+    "View",
+    "Panorama"
+  ],
+  "author": "konforti, juampi92",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juampi92/GSVPano/issues"
+  },
+  "homepage": "https://juampi92.github.io/GSVPano",
+  "dependencies": {
+    "event-emitter": "^0.3.3"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^4.0.1",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.1",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-uglify": "^0.9.2",
+    "grunt-contrib-yuidoc": "^0.10.0",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-watchify": "^0.1.0",
+    "mocha": "^2.3.0",
+    "yuidoc-bootstrap-theme": "https://github.com/juampi92/yuidoc-bootstrap-theme/tarball/master"
+  }
+}
