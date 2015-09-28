@@ -12,12 +12,13 @@ eventEmitter.alloff = require('event-emitter/all-off');
  * @extends {EventEmitter}
  * @constructor
  * @param  {Object} params
- * @param {Hash} params.panoId
+ * @param {Hash} params.id
  * @param {Number} params.rotation (on degrees)
  * @param {Number} params.pitch
  * @param {Google.Maps.LatLng} params.location
  * @param {String} params.copyright
  * @param {Date} params.imageDate
+ * @param {Number} params.zoom
  * @example
  *         var pano = new GSVPANO.Pano({
  *           id: panoId,
