@@ -115,7 +115,7 @@ GSVPANO.PanoLoader.prototype._setProgress = function(pano, p) {
  *       console.log(message)
  *     });
  */
-GSVPANO.PanoLoader.prototype._hrowError = function(message) {
+GSVPANO.PanoLoader.prototype._throwError = function(message) {
   this.emit('error', message);
 };
 
