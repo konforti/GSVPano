@@ -202,6 +202,9 @@ Pano.prototype.createImage = function(x, y) {
  * @private
  */
 Pano.prototype.composeFromTile = function(x, y, texture) {
+  if (this.cancelled) {
+    return;
+  }
   // Complete this section of the frame
   this._ctx.drawImage(texture, x * 512, y * 512);
   this._count++;
@@ -218,6 +221,16 @@ Pano.prototype.composeFromTile = function(x, y, texture) {
     // Remove all events
     eventEmitter.alloff(this);
   }
+};
+
+/**
+ * Cancels the load of the Pano (the images may keep loading)
+ * @method cancel
+ */
+Pano.prototype.cancel = function() {
+  // Remove all events
+  eventEmitter.alloff(this);
+  this.cancelled = true;
 };
 
 module.exports = Pano;

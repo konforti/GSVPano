@@ -43,6 +43,7 @@ GSVPANO.Pano = require('./Pano');
  * @param {Object} parameters
  * @param {Number} parameters.zoom Zoom (default 1)
  * @param {Number} parameters.autocompose Compose automatically (default true)
+ * @param {Number} parameters.radius Google getPanoramaByLocation radius parameter (default 50)
  * @example
  *       var loader = new GSVPANO.PanoLoader({ zoom: 3, autocompose: false });
  */
@@ -69,6 +70,13 @@ GSVPANO.PanoLoader = function(parameters) {
    * @default true
    */
   this.autocompose = (_params.autocompose === undefined) ? true : _params.autocompose;
+  /**
+   * Google getPanoramaByLocation radius parameter
+   * @attribute radius
+   * @type {Number}
+   * @default 50
+   */
+  this.radius = _params.radius || 50;
 };
 
 /**
@@ -115,7 +123,7 @@ GSVPANO.PanoLoader.prototype._setProgress = function(pano, p) {
  *       console.log(message)
  *     });
  */
-GSVPANO.PanoLoader.prototype._hrowError = function(message) {
+GSVPANO.PanoLoader.prototype._throwError = function(message) {
   this.emit('error', message);
 };
 
@@ -161,7 +169,7 @@ GSVPANO.PanoLoader.prototype._hrowError = function(message) {
 GSVPANO.PanoLoader.prototype.load = function(location, callback) {
   var self = this;
 
-  this._panoClient.getPanoramaByLocation(location, 50, function(result, status) {
+  this._panoClient.getPanoramaByLocation(location, this.radius, function(result, status) {
 
     if (status === google.maps.StreetViewStatus.OK) {
 
