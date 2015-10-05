@@ -1,7 +1,7 @@
 {
   "name": "gsvpano",
   "pkgname": "GSVPano",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Google Street View Panorama Util",
   "main": "src/GSVPano.js",
   "directories": {
